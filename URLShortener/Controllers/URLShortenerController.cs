@@ -14,7 +14,7 @@ namespace URLShortener.Controllers
         [Route("{url}")]
         public string Post(string url)
         {
-
+            return null;
         }
     }
 }
