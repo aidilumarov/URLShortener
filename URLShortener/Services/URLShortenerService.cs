@@ -7,5 +7,6 @@ namespace URLShortener.Services
 {
     public class URLShortenerService
     {
+
     }
 }
