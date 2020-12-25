@@ -1,13 +1,13 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace URLShortener.Entities
+namespace UrlShortener.Entities
 {
     public class ShortenedUrl
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         public string Url { get; set; }
 

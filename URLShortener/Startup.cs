@@ -6,9 +6,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using URLShortener.Entities;
+using UrlShortener.Entities;
+using UrlShortener.Services;
 
-namespace URLShortener
+namespace UrlShortener
 {
     public class Startup
     {
@@ -29,6 +30,8 @@ namespace URLShortener
             {
                 return sp.GetRequiredService<IOptions<ShortenedUrlStoreDbSettings>>().Value;
             });
+            
+            services.AddSingleton<UrlShortenerService>();
 
             services.AddControllers();
 

@@ -1,6 +1,6 @@
 {
-  "short_name": "URLShortener",
-  "name": "URLShortener",
+  "short_name": "UrlShortener",
+  "name": "UrlShortener",
   "icons": [
     {
       "src": "favicon.ico",

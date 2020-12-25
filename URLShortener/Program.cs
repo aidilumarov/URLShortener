@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace URLShortener
+namespace UrlShortener
 {
     public class Program
     {

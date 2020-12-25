@@ -1,8 +1,8 @@
 ﻿import React, { Component, createRef } from "react";
-import "./URLShortener.css";
+import "./UrlShortener.css";
 
-export class URLShortener extends Component {
-    static displayName = URLShortener.name;
+export class UrlShortener extends Component {
+    static displayName = UrlShortener.name;
 
     constructor(props) {
         super(props);
@@ -12,19 +12,47 @@ export class URLShortener extends Component {
     }
 
     shortenUrl() {
-        const url = this.urlInputField.current.value;
+        let url = this.urlInputField.current.value;
         console.log(url);
 
-        if (URLShortener.isValidUrl(url)) {
-            
+        if (UrlShortener.isValidUrl(url)) {
+            url = UrlShortener.addProtocolName(url);
+            this.sendShortenUrlRequest(url);
         } else {
             this.setResponseArea("Invalid url");
         }
     }
 
+    async sendShortenUrlRequest(url) {
+        let requestBody = { longUrl: url };
+        return fetch("urlshortener",
+                {
+                    method: "POST",
+                    mode: "cors",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(requestBody)
+                })
+            .then(response => {
+                console.log(response);
+                return response.json();
+            })
+            .then(data => {
+                this.setResponseArea(data["shortUrl"]);
+            });
+    }
+
     setResponseArea(response) {
-        this.responseArea.current.innerText = errorMessage;
+        this.responseArea.current.innerText = response;
         this.responseArea.current.hidden = false;
+    }
+
+    static addProtocolName(url) {
+        if (!url.startsWith("http")) {
+            return "https://" + url;
+        }
+        return url;
     }
 
     static isValidUrl(str) {
@@ -42,7 +70,7 @@ export class URLShortener extends Component {
             <div className="centered">
                 <h2 className="landing-header">Shorten your URLs</h2>
                 <input className="url-input"
-                    ref={this.urlInputField}
+                    ref={ this.urlInputField }
                     placeholder="Input a URL to shorten here" />
                 <button className="submit" onClick={this.shortenUrl}>Shorten</button>
 

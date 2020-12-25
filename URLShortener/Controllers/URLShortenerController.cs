@@ -3,18 +3,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using URLShortener.Dtos;
+using UrlShortener.Services;
 
-namespace URLShortener.Controllers
+namespace UrlShortener.Controllers
 {
     [ApiController]
-    [Route("")]
-    public class URLShortenerController : ControllerBase
+    [Route("[controller]")]
+    public class UrlShortenerController : ControllerBase
     {
-        [HttpPost]
-        [Route("{url}")]
-        public string Post(string url)
+        private readonly UrlShortenerService _shortenerService;
+
+        public UrlShortenerController(UrlShortenerService service)
         {
-            return null;
+            _shortenerService = service;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<UrlShortenResponse>> PostAsync([FromBody] UrlShortenRequest url)
+        {
+            try
+            {
+                var result = await _shortenerService.ShortenAsync(url.LongUrl);
+                var response = new UrlShortenResponse()
+                {
+                    LongUrl = url.LongUrl,
+                    ShortUrl = result
+                };
+
+                return new JsonResult(response);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
