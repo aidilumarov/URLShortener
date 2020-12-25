@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using URLShortener.Entities;
 
 namespace URLShortener
 {
@@ -20,8 +22,15 @@ namespace URLShortener
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Add MongoDb config
+            services.Configure<ShortenedUrlStoreDbSettings>(
+                Configuration.GetSection(nameof(ShortenedUrlStoreDbSettings)));
+            services.AddSingleton<IShortenedUrlStoreDbSettings>(sp =>
+            {
+                return sp.GetRequiredService<IOptions<ShortenedUrlStoreDbSettings>>().Value;
+            });
 
-            services.AddControllersWithViews();
+            services.AddControllers();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
