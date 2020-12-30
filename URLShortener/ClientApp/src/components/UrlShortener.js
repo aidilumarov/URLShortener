@@ -25,7 +25,7 @@ export class UrlShortener extends Component {
 
     async sendShortenUrlRequest(url) {
         let requestBody = { longUrl: url };
-        return fetch("urlshortener",
+        return fetch("",
                 {
                     method: "POST",
                     mode: "cors",

@@ -81,6 +81,30 @@ namespace UrlShortener.Services
             return newShortUrl.UrlShort;
         }
 
+        /// <summary>
+        /// Converts short links back to long URLs
+        /// </summary>
+        /// <param name="shortUrl"></param>
+        /// <returns>Long URL</returns>
+        /// <exception cref="ArgumentException">Short URL is too long or does not exist</exception>
+        public async Task<string> GetLongUrlAsync(string shortUrl)
+        {
+            if (shortUrl.Length > 20)
+            {
+                throw new ArgumentException("Short URL you gave is not that short!");
+            }
+            
+            var decoded = LinkShortener.Decode(shortUrl);
+            var record = await GetAsync(decoded);
+
+            if (record == null)
+            {
+                throw new ArgumentException("Invalid short URL.");
+            }
+
+            return record.Url;
+        }
+        
         #endregion
 
         #region DatabaseQueries

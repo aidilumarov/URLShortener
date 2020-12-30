@@ -33,7 +33,7 @@ namespace URLShortener.Lib
             while (i > 0)
             {  
                 s += Alphabet[i % Base];
-                i = i / Base;
+                i /= Base;
             }
 
             return string.Join(string.Empty, s.Reverse());
