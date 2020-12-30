@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 using MongoDB.Driver;
 using UrlShortener.Entities;
+using URLShortener.Lib;
 
 namespace UrlShortener.Services
 {
@@ -13,13 +14,16 @@ namespace UrlShortener.Services
         #region Fields
 
         private readonly IMongoCollection<ShortenedUrl> _shortenedUrls;
+        private readonly Random _randomizer;
 
         #endregion
 
         #region Constructor
 
-        public UrlShortenerService(IShortenedUrlStoreDbSettings dbSettings)
+        public UrlShortenerService(IShortenedUrlStoreDbSettings dbSettings, Random randomizer)
         {
+            _randomizer = randomizer;
+            
             var client = new MongoClient(dbSettings.ConnectionString);
             var database = client.GetDatabase(dbSettings.DatabaseName);
 
@@ -35,7 +39,7 @@ namespace UrlShortener.Services
         /// </summary>
         /// <param name="providedUrl"></param>
         /// <exception cref="UriFormatException">URL is invalid or does not exist on the internet</exception>
-        /// <returns></returns>
+        /// <returns>Shortened string</returns>
         public async Task<string> ShortenAsync(string providedUrl)
         {
             // Check if providedUrl is valid
@@ -52,24 +56,29 @@ namespace UrlShortener.Services
                 return shortUrl.UrlShort;
             }
 
-            // Create new record and get id
+            int randomId = 0;
+            while (true)
+            {
+                randomId = _randomizer.Next(1, int.MaxValue);
+                var duplicate = await GetAsync(randomId);
+                if (duplicate == null)
+                {
+                    break;
+                }
+            }
+
+            if (randomId == 0) return "Database full";
+            
             var newShortUrl = new ShortenedUrl()
             {
-                Url = providedUrl
+                Id = randomId,
+                Url = providedUrl,
+                UrlShort = LinkShortener.Encode(randomId)
             };
 
-            await _shortenedUrls.InsertOneAsync(newShortUrl);
-
-            // Use this id to 
-            var shortUrlChunk = GetShortUrlChunk(newShortUrl.Id);
-            newShortUrl.UrlShort = shortUrlChunk;
-
-            // Update the record
-            var filter = Builders<ShortenedUrl>.Filter.Eq(nameof(newShortUrl.Id), newShortUrl.Id);
-            var update = Builders<ShortenedUrl>.Update.Set(nameof(newShortUrl.UrlShort), newShortUrl.UrlShort);
-            await _shortenedUrls.UpdateOneAsync(filter, update);
-
-            return shortUrlChunk;
+            await CreateAsync(newShortUrl);
+            
+            return newShortUrl.UrlShort;
         }
 
         #endregion
@@ -82,7 +91,7 @@ namespace UrlShortener.Services
             return shortenedUrl;
         }
 
-        private async Task<ShortenedUrl> GetAsync(string id)
+        private async Task<ShortenedUrl> GetAsync(int id)
         {
             var result = await _shortenedUrls
                 .FindAsync<ShortenedUrl>(x => x.Id == id);
@@ -92,16 +101,6 @@ namespace UrlShortener.Services
         #endregion
 
         #region UrlShortener
-
-        private string GetShortUrlChunk(string id)
-        {
-            return WebEncoders.Base64UrlEncode(Encoding.ASCII.GetBytes(id));
-        }
-
-        private string GetIdFromShortUrlChunk(string urlChunk)
-        {
-            return Encoding.ASCII.GetString(WebEncoders.Base64UrlDecode(urlChunk));
-        }
 
         private static bool IsValidUrl(string url)
         {

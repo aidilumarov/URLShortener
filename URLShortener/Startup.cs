@@ -1,6 +1,6 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +30,8 @@ namespace UrlShortener
             {
                 return sp.GetRequiredService<IOptions<ShortenedUrlStoreDbSettings>>().Value;
             });
-            
+
+            services.AddSingleton<Random>();
             services.AddSingleton<UrlShortenerService>();
 
             services.AddControllers();

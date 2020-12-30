@@ -28,7 +28,7 @@ namespace UrlShortener.Controllers
                 var response = new UrlShortenResponse()
                 {
                     LongUrl = url.LongUrl,
-                    ShortUrl = result
+                    ShortUrl = $"{this.Request.Scheme}://{this.Request.Host}/{result}"
                 };
 
                 return new JsonResult(response);
