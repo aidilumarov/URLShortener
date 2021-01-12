@@ -11,6 +11,12 @@ export class UrlShortener extends Component {
         this.responseArea = React.createRef();
     }
 
+    handleKeyPress = (e) => {
+        if (e.keyCode === 13) {
+            this.shortenUrl();
+        }
+    }
+
     shortenUrl() {
         let url = this.urlInputField.current.value;
         console.log(url);
@@ -21,6 +27,10 @@ export class UrlShortener extends Component {
         } else {
             this.setResponseArea("Invalid url");
         }
+    }
+
+    wrapInsideAnchor(link) {
+        return `<a href="${link}">${link}</a>`
     }
 
     async sendShortenUrlRequest(url) {
@@ -39,12 +49,12 @@ export class UrlShortener extends Component {
                 return response.json();
             })
             .then(data => {
-                this.setResponseArea(data["shortUrl"]);
+                this.setResponseArea(this.wrapInsideAnchor(data["shortUrl"]));
             });
     }
 
     setResponseArea(response) {
-        this.responseArea.current.innerText = response;
+        this.responseArea.current.innerHTML = response;
         this.responseArea.current.hidden = false;
     }
 
@@ -71,11 +81,11 @@ export class UrlShortener extends Component {
                 <h2 className="landing-header">Shorten your URLs</h2>
                 <input className="url-input"
                     ref={ this.urlInputField }
-                    placeholder="Input a URL to shorten here" />
-                <button className="submit" onClick={this.shortenUrl}>Shorten</button>
-
+                    placeholder="Input a URL to shorten here"
+                    onKeyDown={this.handleKeyPress} />
+                <button class="submit" onClick={this.shortenUrl} onKeyPress={this.handleKeyPress}>Shorten</button>
                 <div className="response-area" hidden ref={ this.responseArea }>
-                
+
                 </div>
 
             </div>
