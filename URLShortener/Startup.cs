@@ -57,19 +57,22 @@ namespace UrlShortener
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
 
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "redirection",
+                    pattern: "/{url}",
+                    defaults: new { controller = "URLShortener", action = "GetAsync"});
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
 
+            app.UseSpaStaticFiles();
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";

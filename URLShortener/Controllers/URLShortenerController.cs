@@ -40,7 +40,7 @@ namespace UrlShortener.Controllers
         }
 
         [HttpGet("/{shortUrl}")]
-        public async Task<IActionResult> GetAsymc(string shortUrl)
+        public async Task<IActionResult> GetAsync(string shortUrl)
         {
             try
             {
