@@ -21,7 +21,7 @@ namespace URLShortener.Tests.Common
                 var dbConfigSection = parsedJson["ShortenedUrlStoreDbSettings"].ToString();
                 return JsonConvert.DeserializeObject<ShortenedUrlStoreDbSettings>(dbConfigSection);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
