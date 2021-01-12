@@ -9,7 +9,7 @@ using UrlShortener.Services;
 namespace UrlShortener.Controllers
 {
     [ApiController]
-    [Route("")]
+    [Route("[controller]")]
     public class UrlShortenerController : ControllerBase
     {
         private readonly UrlShortenerService _shortenerService;
@@ -19,7 +19,7 @@ namespace UrlShortener.Controllers
             _shortenerService = service;
         }
 
-        [HttpPost("")]
+        [HttpPost]
         public async Task<ActionResult<UrlShortenResponse>> PostAsync([FromBody] UrlShortenRequest url)
         {
             try
@@ -39,7 +39,7 @@ namespace UrlShortener.Controllers
             }
         }
 
-        [HttpGet("{shortUrl}")]
+        [HttpGet("/{shortUrl}")]
         public async Task<IActionResult> GetAsymc(string shortUrl)
         {
             try

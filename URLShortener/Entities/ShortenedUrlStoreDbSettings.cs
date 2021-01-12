@@ -2,20 +2,42 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace UrlShortener.Entities
 {
-    public class ShortenedUrlStoreDbSettings : IShortenedUrlStoreDbSettings
+    public class MongoDbConfig : IMongoDbConfig
     {
-        public string ShortenedUrlCollectionName { get; set; }
-        public string ConnectionString { get; set; }
-        public string DatabaseName { get; set; }
+        public string Database { get; set; }
+        public string ShortUrlCollection { get; set; }
+        public string Host { get; set; }
+        public int Port { get; set; }
+        public string User { get; set; }
+        public string Password { get; set; }
+
+        public string ConnectionString
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(User) ||
+                    string.IsNullOrEmpty(Password))
+                {
+                    return $@"mongodb://{Host}:{Port}";
+                }
+
+                return $@"mongodb://{User}:{Password}@{Host}:{Port}";
+            }
+        }
     }
 
-    public interface IShortenedUrlStoreDbSettings
+    public interface IMongoDbConfig
     {
-        string ShortenedUrlCollectionName { get; set; }
-        string ConnectionString { get; set; }
-        string DatabaseName { get; set; }
+        string Database { get; set; }
+        string ShortUrlCollection { get; set; }
+        string Host { get; set; }
+        int Port { get; set; }
+        string User { get; set; }
+        string Password { get; set; }
+        string ConnectionString { get; }
     }
 }

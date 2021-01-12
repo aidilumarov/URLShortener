@@ -20,14 +20,14 @@ namespace UrlShortener.Services
 
         #region Constructor
 
-        public UrlShortenerService(IShortenedUrlStoreDbSettings dbSettings, Random randomizer)
+        public UrlShortenerService(IMongoDbConfig dbConfig, Random randomizer)
         {
             _randomizer = randomizer;
             
-            var client = new MongoClient(dbSettings.ConnectionString);
-            var database = client.GetDatabase(dbSettings.DatabaseName);
+            var client = new MongoClient(dbConfig.ConnectionString);
+            var database = client.GetDatabase(dbConfig.Database);
 
-            _shortenedUrls = database.GetCollection<ShortenedUrl>(dbSettings.ShortenedUrlCollectionName);
+            _shortenedUrls = database.GetCollection<ShortenedUrl>(dbConfig.ShortUrlCollection);
         }
 
         #endregion

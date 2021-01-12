@@ -1,4 +1,4 @@
-﻿import React, { Component, createRef } from "react";
+﻿import React, { Component } from "react";
 import "./UrlShortener.css";
 
 export class UrlShortener extends Component {
@@ -25,7 +25,7 @@ export class UrlShortener extends Component {
 
     async sendShortenUrlRequest(url) {
         let requestBody = { longUrl: url };
-        return fetch("",
+        return fetch("urlshortener",
                 {
                     method: "POST",
                     mode: "cors",

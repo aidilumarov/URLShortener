@@ -12,14 +12,14 @@ namespace URLShortener.Tests.Common
         /// Get config settings
         /// </summary>
         /// <returns>DbSettings or null</returns>
-        public static ShortenedUrlStoreDbSettings ParseDbConfigSection()
+        public static MongoDbConfig ParseDbConfigSection()
         {
             try
             {
                 var json = File.ReadAllText("appsettings.json");
                 var parsedJson = JObject.Parse(json);
-                var dbConfigSection = parsedJson["ShortenedUrlStoreDbSettings"].ToString();
-                return JsonConvert.DeserializeObject<ShortenedUrlStoreDbSettings>(dbConfigSection);
+                var dbConfigSection = parsedJson["MongoDbConfig"].ToString();
+                return JsonConvert.DeserializeObject<MongoDbConfig>(dbConfigSection);
             }
             catch (Exception)
             {

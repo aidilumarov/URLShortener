@@ -24,11 +24,11 @@ namespace UrlShortener
         public void ConfigureServices(IServiceCollection services)
         {
             // Add MongoDb config
-            services.Configure<ShortenedUrlStoreDbSettings>(
-                Configuration.GetSection(nameof(ShortenedUrlStoreDbSettings)));
-            services.AddSingleton<IShortenedUrlStoreDbSettings>(sp =>
+            services.Configure<MongoDbConfig>(
+                Configuration.GetSection(nameof(MongoDbConfig)));
+            services.AddSingleton<IMongoDbConfig>(sp =>
             {
-                return sp.GetRequiredService<IOptions<ShortenedUrlStoreDbSettings>>().Value;
+                return sp.GetRequiredService<IOptions<MongoDbConfig>>().Value;
             });
 
             services.AddSingleton<Random>();
